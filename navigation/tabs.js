@@ -16,11 +16,11 @@ const Tabs = () => {
         tabBarActiveTintColor: "#5983C1",
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "#fff",
+          backgroundColor: "#242526",
           borderTopWidth: 7,
-            borderTopColor: "#D9D9D9",
-            height: 100,
-        },      
+          borderTopColor: "#525252",
+          height: 100,
+        },
       }}
     >
       <Tab.Screen
@@ -35,7 +35,7 @@ const Tabs = () => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "#5983C1" : "#3b3d40",
+                  tintColor: focused ? "#fff" : "#3b3d40",
                 }}
               />
             </View>
@@ -54,7 +54,7 @@ const Tabs = () => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "#5983C1" : "#3b3d40",
+                  tintColor: focused ? "#fff" : "#3b3d40",
                 }}
               />
             </View>
@@ -73,7 +73,7 @@ const Tabs = () => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "#5983C1" : "#3b3d40",
+                  tintColor: focused ? "#fff" : "#3b3d40",
                 }}
               />
             </View>
@@ -92,7 +92,7 @@ const Tabs = () => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "#5983C1" : "#3b3d40",
+                  tintColor: focused ? "#fff" : "#3b3d40",
                 }}
               />
             </View>
@@ -111,7 +111,7 @@ const Tabs = () => {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "#5983C1" : "#3b3d40",
+                  tintColor: focused ? "#fff" : "#3b3d40",
                 }}
               />
             </View>

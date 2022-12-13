@@ -7,12 +7,12 @@ const Home = () => {
   const [tweets, setTweets] = useState([]);
   const [photos, setPhotos] = useState([]);
 
-  // useEffect(() => {
-  //   getTwitterData().then((data) => {
-  //     setTweets(data.tweets);
-  //     setPhotos(data.photos);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getTwitterData().then((data) => {
+      setTweets(data.tweets);
+      setPhotos(data.photos);
+    });
+  }, []);
 
   if (tweets.length === 0 || photos.length === 0) return (
     <View key={"loading"} style={styles.container}>
@@ -20,59 +20,66 @@ const Home = () => {
     </View>
   )
 
-  // return (
-  //   <ScrollView>
-  //     <View style={styles.container} key = {"ready"}>
-  //       {Object.keys(tweets).map((tweet, index) => {
-  //         var tweetText = tweets[tweet].text;
-  //         var tweetPhoto = null;
-  //         if ("url" in photos[index]) {
-  //           tweetPhoto = photos[index].url;
-  //         } else if ("preview_image_url" in photos[index]) {
-  //           tweetPhoto = photos[index].preview_image_url;
-  //         }
-  //         return (
-  //           <View key={tweet.id} style={styles.tweet}>
-  //             <View style={styles.twitterHeader}>
-  //               <Image style={styles.pfp} source={twitterpng} />
-  //               <View>
-  //                 <Text style={styles.username}>Parkland Schools</Text>
-  //                 <Text style={styles.handle}>@ParklandSchools</Text>
-  //                 <Text></Text>
-  //               </View>
-  //             </View>
-  //             <Text style={styles.body}>
-  //               {(tweetText = tweetText.substring(0, tweetText.length - 24))}{" "}
-  //             </Text>
-  //             <Image
-  //               style={styles.image}
-  //               source={{
-  //                 uri: tweetPhoto,
-  //               }}
-  //             />
-  //           </View>
-  //         );
-  //       })}
-  //     </View>
-  //   </ScrollView>
-  // );
+  return (
+    <ScrollView>
+      <View style={styles.container} key={"ready"}>
+        <Text style={ styles.text}>Find all of the Parkland School District's tweets below!</Text>
+        {Object.keys(tweets).map((tweet, index) => {
+          try {
+            var tweetText = tweets[tweet].text;
+            var tweetPhoto = null;
+            if ("url" in photos[index]) {
+              tweetPhoto = photos[index].url;
+            } else if ("preview_image_url" in photos[index]) {
+              tweetPhoto = photos[index].preview_image_url;
+            }
+            return (
+              <View key={tweet.id} style={styles.tweet}>
+                <View style={styles.twitterHeader}>
+                  <Image style={styles.pfp} source={twitterpng} />
+                  <View>
+                    <Text style={styles.username}>Parkland Schools</Text>
+                    <Text style={styles.handle}>@ParklandSchools</Text>
+                    <Text></Text>
+                  </View>
+                </View>
+                <Text style={styles.body}>
+                  {(tweetText = tweetText.substring(0, tweetText.length - 24))}{" "}
+                </Text>
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: tweetPhoto,
+                  }}
+                />
+              </View>
+            );
+          } catch (e) {
+            console.log(e);
+          }
+          
+        })}
+      </View>
+    </ScrollView>
+  );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#484B70",
   },
   tweet: {
     width: "90%",
     fontSize: 20,
-    borderWidth: 3,
-    borderColor: "#d9d9d9",
+    borderWidth: 5,
+    borderColor: "#a8a8a8",
     padding: 20,
     borderRadius: 15,
     margin: 15,
-    alignSelf: 'center'
+    alignSelf: "center",
+    backgroundColor: "#DfDfe2",
   },
   image: {
     width: "90%",
@@ -98,5 +105,12 @@ const styles = StyleSheet.create({
   },
   twitterHeader: {
     flexDirection: "row",
+  },
+  text: {
+    fontSize: 20,
+    color: "#fff",
+    textAlign: "center",
+    padding: 8,
+    fontStyle: "italic",
   },
 });
