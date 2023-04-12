@@ -5,6 +5,7 @@ import Lunch from "../screens/lunch";
 import Photos from "../screens/photos";
 import Absence from "../screens/absence";
 import Calendar from "../screens/calendar";
+import SignIn from "../screens/signIn";
 
 const Tab = createBottomTabNavigator();
 
@@ -118,6 +119,25 @@ const Tabs = () => {
           ),
         }}
       />
+      {/* <Tab.Screen
+        name="Login"
+        component={SignIn}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+              <Image
+                source={require("../assets/icons/lunch.png")}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                  tintColor: focused ? "#fff" : "#3b3d40",
+                }}
+              />
+            </View>
+          ),
+        }}
+      /> */}
     </Tab.Navigator>
   );
 };
