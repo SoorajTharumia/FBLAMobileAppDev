@@ -84,9 +84,6 @@ const Absence = () => {
               date: absenceDate,
               school: schoolAttending,
             })
-            .then(() => {
-              alert("Absence Submitted!");
-            });
         }}
       >
         <Text style={styles.buttonText}>Submit Absence</Text>

@@ -1,82 +1,312 @@
-// //web: 769636755616-paf43sdaj60h3udfuh1ifn7ftevguge5.apps.googleusercontent.com, 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
-// // ios: 769636755616-mcg18g9lvjkruac9icnf199oc1kpqil3.apps.googleusercontent.com
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Linking } from "react-native";
+import { firebase } from "../firebase/config";
+import UserContext from "../components/userContext";
 
-// import React from 'react'
-// import * as WebBrowser from 'expo-web-browser';
-// import * as Google from 'expo-auth-session/providers/google';
-// import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+const LoginScreen = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [signupModalVisible, setSignupModalVisible] = useState(false);  
 
-// const signIn = () => {
-//     WebBrowser.maybeCompleteAuthSession();
+  const user = useContext(UserContext);
 
-//     const [accessToken, setAccessToken] = React.useState(null);
-//     const [user, setUser] = React.useState(null);
-//     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-//         clientId: "769636755616-paf43sdaj60h3udfuh1ifn7ftevguge5.apps.googleusercontent.com",
-//         iosClientId: "769636755616-mcg18g9lvjkruac9icnf199oc1kpqil3.apps.googleusercontent.com"
-//     });
+  const handleLogin = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Login successful
+        const user = userCredential.user;
+        setEmail("");
+        setPassword("");
+        setLoginModalVisible(false);
+      })
+      .catch((error) => {
+        // Login failed
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        alert("Login Failed! Please try again.")
+      });
+  };
 
-//     React.useEffect(() => {
-//         if (response?.type === 'success') {
-//             setAccessToken(response.authentication.accessToken);
-//             accessToken && fetchUserInfo();
-//         }
-//     }, [response, accessToken]);
+  const handleSignup = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Sign up successful
+        const user = userCredential.user;
+        user.updateProfile({
+          displayName: name,
+        }).then(() => {
+          console.log(user);
+          setEmail("");
+          setPassword("");
+          setName("");
+          setSignupModalVisible(false);
+        }).catch((error) => {
+          console.log(error);
+        });
+      })
+      .catch((error) => {
+        // Sign up failed
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        alert("Sign Up Failed! Please try again.")
+      });
+  };
+
+  const handleLogout = () => {
+    firebase.auth().signOut();
+  };
     
-//     async function fetchUserInfo() {
-//         let response = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-//             headers: {
-//                 Authorization: `Bearer ${accessToken}`,
-//             }
-//         });
-//         const userInfo = await response.json();
-//         console.log(userInfo);
-//         setUser(userInfo);
-//     }
+    // function that takes user to website www.parklandsd.org without Linking
+    const handleWebsite = () => {
+      Linking.openURL("https://www.parklandsd.org");
+    };
+  return (
+    <View style={styles.container}>
+      {user ? (
+        <View style={styles.userInfoContainer}>
+            <Text style={styles.userInfoText}>Welcome, {user.displayName}</Text>
+            <Text style={styles.userInfoText}>Email: {user.email}</Text>
+            <TouchableOpacity onPress={handleLogout} style={styles.signOutButton}>
+                <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+        </View>
+      ) : (
+        <>
+          <Text style={styles.title}>
+            Log into your account or Sign Up for one below!
+          </Text>
+          <View style={styles.signInFormContainer}>
+            <TouchableOpacity
+              onPress={() => setLoginModalVisible(true)}
+              style={styles.signInButton}
+            >
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setSignupModalVisible(true)}
+              style={styles.signUpButton}
+            >
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
 
-//     const showUserInfo = () => {
-//         if (user) {
-//             return (
-//                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Welcome</Text>
-//                     <Image source={{ uri: user.picture }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-//                     <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{user.name}</Text>
-//                 </View>
-//             )
-//         }
-//     }
-        
-//   return (
-//       <View style={styles.container}>
-          
-//           {user && <ShowUserInfo />}
-//           {user === null &&
-//               <>
-//               <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Sign In</Text>
-              
-//               <TouchableOpacity 
-//                   disabled={!request}
-//                   onPress={() => {
-//                       promptAsync();
-                      
-//                   }}
-//                   style={{ backgroundColor: '#4285F4', padding: 10, borderRadius: 5, marginTop: 20 }}
-//               >
-//                   <Text style={{ color: 'white', fontSize: 20 }}>Sign In with Google</Text>   
-//               </TouchableOpacity>
-        
-//               </>
-//           }
-//     </View>
-//   )
-// }
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={loginModalVisible}
+            >
+              <View style={styles.signInForm}>
+                <Text style={styles.subtext}>Email:</Text>
+                <TextInput
+                  style={styles.signInInput}
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <Text style={styles.subtext}>Password:</Text>
+                <TextInput
+                  style={styles.signInInput}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={true}
+                />
 
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-// });
+                <View style={styles.signInButtonContainer}>
+                  <TouchableOpacity
+                    onPress={handleLogin}
+                    style={styles.signInButton}
+                  >
+                    <Text style={styles.buttonText}>Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setLoginModalVisible(false);
+                      setEmail("");
+                      setPassword("");
+                    }}
+                    style={styles.signInButton}
+                  >
+                    <Text style={styles.buttonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
 
-// export default signIn
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={signupModalVisible}
+            >
+              <View style={styles.signInForm}>
+                <Text style={styles.subtext}>Name:</Text>
+                <TextInput
+                  style={styles.signInInput}
+                  value={name}
+                  onChangeText={setName}
+                />
+                <Text style={styles.subtext}>Email:</Text>
+                <TextInput
+                  style={styles.signInInput}
+                  value={email}
+                  onChangeText={setEmail}
+                />
+                <Text style={styles.subtext}>Password:</Text>
+                <TextInput
+                  style={styles.signInInput}
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <View style={styles.signInButtonContainer}>
+                  <TouchableOpacity
+                    onPress={handleSignup}
+                    style={styles.signInButton}
+                  >
+                    <Text style={styles.buttonText}>Sign Up</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSignupModalVisible(false);
+                      setEmail("");
+                      setPassword("");
+                      setName("");
+                    }}
+                    style={styles.signInButton}
+                  >
+                    <Text style={styles.buttonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </View>
+        </>
+      )}
+      <View style={styles.websiteContainer}>
+        <TouchableOpacity style={styles.websiteButton} onPress={handleWebsite}>
+          <Text style={styles.buttonText}>Visit District Website!</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+export default LoginScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#484B70",
+  },
+  userInfoContainer: {
+    
+    justifyContent: "center",
+    alignItems: "center",
+    
+  },
+  userInfoText: {
+    fontSize: 20,
+    color: "#fff",
+    textAlign: "center",
+    padding: 8,
+    fontStyle: "italic",
+  },
+  signOutButton: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    margin: 15,
+    padding: 10,
+    width: "40%",
+    height: 48,
+  },
+  signUpButton: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    margin: 15,
+    padding: 10,
+    width: "40%",
+    height: 48,
+  },
+  signInFormContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  signInForm: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    backgroundColor: "#484B70",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 10,
+    padding: 20,
+  },
+  signInText: {
+    fontSize: 20,
+    color: "#fff",
+    textAlign: "center",
+    padding: 8,
+    fontStyle: "italic",
+  },
+  signInInput: {
+    height: 40,
+    width: "80%",
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#DfDfe2",
+  },
+  subtext: {
+    fontSize: 20,
+    color: "#fff",
+    fontStyle: "italic",
+    paddingBottom: 5,
+  },
+  signInButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: "100%",
+    marginTop: 20,
+  },
+  signInButton: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    margin: 15,
+    padding: 10,
+    width: "40%",
+    height: 48,
+  },
+  buttonText: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 20,
+  },
+  title: {
+    fontSize: 20,
+    color: "#fff",
+    textAlign: "center",
+    padding: 8,
+    fontStyle: "italic",
+    },
+    websiteButton: {
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        margin: 15,
+        padding: 10,
+        height: 48,
+    },
+    websiteContainer: {
+        flex: 1,
+        position: "absolute",
+        width: "100%",
+        bottom: 0,
+    },
+});
+

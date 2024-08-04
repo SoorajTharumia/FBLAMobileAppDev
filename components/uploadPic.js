@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Text, TouchableOpacity, View, ActivityIndicator, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { firebase } from '../firebase/config';
+import UserContext from "../components/userContext";
+
 
 const uploadPic = () => {
+  const user = useContext(UserContext)
+
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   
@@ -42,8 +46,15 @@ const uploadPic = () => {
           snapshot.snapshot.ref.getDownloadURL().then((url) => {
             setUploading(false);
             console.log("File available at", url);
-            const createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            collectionRef.add({ url, createdAt });
+            var newDate = new Date();
+            newDate = newDate.toDateString();
+            newDate = newDate.slice(4);
+            console.log(newDate);
+            collectionRef.add({
+              url,
+              newDate,
+              displayName: user ? user.displayName : "Guest",
+            });
             blob.close();
             return url;
           });

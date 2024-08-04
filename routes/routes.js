@@ -1,13 +1,16 @@
+require('dotenv').config();
+
 export const getTwitterData = async () => {
     const api = {
-      key: "OJm7lolJQDSLmVupvBcSbWNmt",
-      secretKey: "UvwinLTz8c7mAYXI3Zc8vBYafkrua6mOvJiYr0yuYkNpcDVmYD",
-      bearerToken:
-        "AAAAAAAAAAAAAAAAAAAAAB85jwEAAAAAINE3yXB5FwihQVWYv%2B%2BhcIE%2FEPQ%3Ddwhvx9KOSNLxzPvaqcFsUfEcWFqCgG1V6pn8zZq5ugVZ122sXb",
+        key: process.env.TWITTER_API_KEY,
+        secretKey: process.env.TWITTER_SECRET_KEY,
+        bearerToken: process.env.TWITTER_BEARER_TOKEN,
     };
 
     const data = await fetch(
+        // Twitter api link to fetch from PSD twitter account
         "https://api.twitter.com/2/users/526262593/tweets?tweet.fields=lang&expansions=attachments.media_keys&media.fields=preview_image_url,url",
+        
         {
             headers: {
                 Authorization: `Bearer ${api.bearerToken}`,

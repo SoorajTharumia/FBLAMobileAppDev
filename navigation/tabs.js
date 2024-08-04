@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View, Image } from "react-native";
+import { View, Image } from "react-native";
 import Home from "../screens/home";
 import Lunch from "../screens/lunch";
 import Photos from "../screens/photos";
@@ -119,14 +119,14 @@ const Tabs = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Login"
         component={SignIn}
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
               <Image
-                source={require("../assets/icons/lunch.png")}
+                source={require("../assets/icons/gear.png")}
                 resizeMode="contain"
                 style={{
                   width: 30,
@@ -137,7 +137,7 @@ const Tabs = () => {
             </View>
           ),
         }}
-      /> */}
+      />
     </Tab.Navigator>
   );
 };
