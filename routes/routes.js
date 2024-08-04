@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); //importing .env
 
 export const getTwitterData = async () => {
     const api = {
