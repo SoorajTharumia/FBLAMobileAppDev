@@ -5,8 +5,6 @@ import "firebase/compat/firestore";
 import { initializeApp } from 'firebase/app'
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 
-
-// Your web app's Firebase configuration
 const firebaseConfig = {  
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
